@@ -1,8 +1,13 @@
+import { Estilos } from './componentes/EstilosGlobais/Estilos';
+
 function App() {
   return (
-    <div>
-      <h1>Freelando</h1>
-    </div>
+    <>
+      <div>
+        <Estilos />
+        <h1>Freelando</h1>
+      </div>
+    </>
   );
 }
 
