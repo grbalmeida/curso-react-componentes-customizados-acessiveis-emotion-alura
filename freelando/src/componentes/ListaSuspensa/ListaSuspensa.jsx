@@ -7,6 +7,8 @@ const ItemListaSuspensaEstilizado = styled.li`
     border-bottom: 1px solid ${props => props.theme.cores.neutras.c};
     cursor: pointer;
 
+    color: ${props => props.focoAtivo ? props.theme.cores.focus : 'inherit'};
+
     &:last-child {
         border: none;
     }
@@ -68,7 +70,27 @@ const BotaoEstilizado = styled.button`
 `;
 
 export const ListaSuspensa = ({ titulo, opcoes }) => {
-    const [estaAberta, alternarVisibilidade] = useState(false)
+    const [estaAberta, alternarVisibilidade] = useState(false);
+    const [opcaoFocada, setOpcaoFocada] = useState(null);
+
+    const manipularTeclaDoTeclado = (evento) => {
+        alternarVisibilidade(true);
+
+        switch (evento.key) {
+            case 'ArrowDown':
+                evento.preventDefault();
+                setOpcaoFocada(focoAntigo => {
+                    if (!focoAntigo) {
+                        return 0;
+                    }
+
+                    return focoAntigo += 1;
+                });
+                break;
+            default:
+                break;
+        }
+    }
     
     return (
         <LabelEstilizada>
@@ -76,6 +98,7 @@ export const ListaSuspensa = ({ titulo, opcoes }) => {
             <BotaoEstilizado
                 estaAberta={estaAberta}
                 onClick={() => alternarVisibilidade(!estaAberta)}
+                onKeyDown={manipularTeclaDoTeclado}
             >
                 <div>
                     Selecione
@@ -86,8 +109,11 @@ export const ListaSuspensa = ({ titulo, opcoes }) => {
             </BotaoEstilizado>
             {estaAberta && 
                 <ListaSuspensaEstilizada>
-                    {opcoes.map(opcao => (
-                        <ItemListaSuspensaEstilizado key={opcao.value}>{opcao.text}</ItemListaSuspensaEstilizado>
+                    {opcoes.map((opcao, index) => (
+                        <ItemListaSuspensaEstilizado
+                            key={opcao.value}
+                            focoAtivo={index === opcaoFocada}
+                        >{opcao.text}</ItemListaSuspensaEstilizado>
                     ))}
                 </ListaSuspensaEstilizada>
             }
