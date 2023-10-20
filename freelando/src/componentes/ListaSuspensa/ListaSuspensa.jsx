@@ -53,6 +53,13 @@ export const ListaSuspensa = ({ titulo, opcoes }) => {
                     <span>{estaAberta ? '▲' : '▼'}</span>
                 </div>
             </BotaoEstilizado>
+            {estaAberta && 
+                <ul>
+                    {opcoes.map(opcao => (
+                        <li key={opcao.value}>{opcao.text}</li>
+                    ))}
+                </ul>
+            }
         </LabelEstilizada>
     )
 }
