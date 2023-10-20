@@ -72,6 +72,7 @@ const BotaoEstilizado = styled.button`
 export const ListaSuspensa = ({ titulo, opcoes }) => {
     const [estaAberta, alternarVisibilidade] = useState(false);
     const [opcaoFocada, setOpcaoFocada] = useState(null);
+    const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
     const manipularTeclaDoTeclado = (evento) => {
         alternarVisibilidade(true);
@@ -80,12 +81,28 @@ export const ListaSuspensa = ({ titulo, opcoes }) => {
             case 'ArrowDown':
                 evento.preventDefault();
                 setOpcaoFocada(focoAntigo => {
-                    if (!focoAntigo) {
+                    if (focoAntigo == null) {
                         return 0;
                     }
 
                     return focoAntigo += 1;
                 });
+                break;
+            case 'ArrowUp':
+                evento.preventDefault();
+                setOpcaoFocada(focoAntigo => {
+                    if (!focoAntigo) {
+                        return 0;
+                    }
+
+                    return focoAntigo -= 1;
+                });
+                break;
+            case 'Enter':
+                evento.preventDefault();
+                setOpcaoSelecionada(opcoes[opcaoFocada]);
+                setOpcaoFocada(null);
+                alternarVisibilidade(false);
                 break;
             default:
                 break;
@@ -101,7 +118,7 @@ export const ListaSuspensa = ({ titulo, opcoes }) => {
                 onKeyDown={manipularTeclaDoTeclado}
             >
                 <div>
-                    Selecione
+                    { opcaoSelecionada ? opcaoSelecionada.text : 'Selecione' }
                 </div>
                 <div>
                     <span>{estaAberta ? '▲' : '▼'}</span>
@@ -112,7 +129,8 @@ export const ListaSuspensa = ({ titulo, opcoes }) => {
                     {opcoes.map((opcao, index) => (
                         <ItemListaSuspensaEstilizado
                             key={opcao.value}
-                            focoAtivo={index === opcaoFocada}
+                            focoAtivo={(index === opcaoFocada) || (opcaoSelecionada && opcaoSelecionada.value === opcao.value)}
+                            onClick={() => setOpcaoSelecionada(opcao)}
                         >{opcao.text}</ItemListaSuspensaEstilizado>
                     ))}
                 </ListaSuspensaEstilizada>
